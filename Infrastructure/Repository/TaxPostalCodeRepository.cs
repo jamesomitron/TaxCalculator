@@ -20,12 +20,7 @@ public class TaxPostalCodeRepository : ITaxPostalCodeRepository
 
     public async Task<taxPostalCodeEntity> GetPostalCodeByCodeAsync(string postalCode)
     {
-        var code =  await _context.TaxPostalCode.FirstOrDefaultAsync(o => o.Code.Equals(postalCode, StringComparison.Ordinal));
-
-        if(code == null)
-        {
-            throw new Exception("Postal Code Not Found");
-        }
+        var code = await _context.Set<taxPostalCodeEntity>().Where(o => o.Code.Equals(postalCode)).FirstOrDefaultAsync();
 
         return code;
     }
