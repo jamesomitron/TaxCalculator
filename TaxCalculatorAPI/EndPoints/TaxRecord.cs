@@ -22,6 +22,18 @@ public static class TaxRecord
             return Results.Ok(output);
         });
 
+        app.MapGet("/api/taxrecord/{id}", async (Guid Id) =>
+        {
+            var output = await unitOfWork.TaxRecord.GetTaxRecordAsync(Id);
+
+            if (output is null)
+            {
+                return Results.NotFound();
+            }
+
+            return Results.Ok(output);
+        });
+
         app.MapPost("/api/calculatetax", async (IValidator<TaxRecordRequest> validator, ITaxCalculationFactory taxCalculationFactory, [FromBody]TaxRecordRequest taxRecordRequest) =>
         {
             var validationResult = await validator.ValidateAsync(taxRecordRequest);
@@ -54,7 +66,7 @@ public static class TaxRecord
                 unitOfWork.TaxRecord.Add(taxRecord);
                 await unitOfWork.CompleteAsync();
 
-                return Results.Ok(taxRecord);
+                return Results.Created($"/api/taxrecord/{taxRecord.Id}",taxRecord);
             }
             catch (Exception ex)
             {

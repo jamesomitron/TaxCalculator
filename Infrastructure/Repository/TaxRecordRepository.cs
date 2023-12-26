@@ -20,6 +20,11 @@ public class TaxRecordRepository : ITaxRecordRepository
 
     public async Task<IEnumerable<taxRecordEntity>> GetTaxRecordAsync()
     {
-        return await _context.Set<taxRecordEntity>().ToListAsync();
+        return await _context.Set<taxRecordEntity>().OrderByDescending(o => o.DateCreated).Take(5).ToListAsync();
+    }
+
+    public async Task<taxRecordEntity> GetTaxRecordAsync(Guid Id)
+    {
+        return await _context.Set<taxRecordEntity>().Where(o => o.Id.Equals(Id)).FirstOrDefaultAsync();
     }
 }
