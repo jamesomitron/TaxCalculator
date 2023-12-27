@@ -55,7 +55,7 @@ public class ApplicationDBContextInitialiser
                 new TaxProgressiveRates{ Rate = 25, FromValue = 33951, ToValue = 82250},
                 new TaxProgressiveRates{ Rate = 28, FromValue = 82251, ToValue = 171550},
                 new TaxProgressiveRates{ Rate = 33, FromValue = 171551, ToValue = 372950},
-                new TaxProgressiveRates{ Rate = 35, FromValue = 372951, ToValue = int.MaxValue},
+                new TaxProgressiveRates{ Rate = 35, FromValue = 372951},
             };
 
             await _context.TaxProgressiveRates.AddRangeAsync(progressiveMatrix);

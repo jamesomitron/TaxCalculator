@@ -9,11 +9,11 @@ public class ProgressiveCalculation : ITaxCalculationByType
                             IEnumerable<TaxConfigValue> TaxConfigValues,
                             IEnumerable<TaxProgressiveRates> TaxProgressiveRate)
     {
-        decimal taxValue = 0;
+        decimal? taxValue = 0;
 
         if (AnnualIncome.Equals(0))
         {
-            return taxValue;
+            return (decimal)taxValue;
         }
 
         if (TaxProgressiveRate.Count().Equals(0))
@@ -21,18 +21,27 @@ public class ProgressiveCalculation : ITaxCalculationByType
             throw new ArgumentException("No Progressive Matrix Found");
         }
 
-        if (!ValidateTaxMatrix(TaxProgressiveRate))
+        var taxProgressiveRateToList = TaxProgressiveRate.ToList();
+
+        var maxFromValue = taxProgressiveRateToList.Max(o => o.FromValue);
+        if(AnnualIncome >= maxFromValue)
+        {
+            int index = taxProgressiveRateToList.FindIndex(o => o.FromValue == maxFromValue);
+            taxProgressiveRateToList[index].ToValue = AnnualIncome;
+        }
+
+        if (!ValidateTaxMatrix(taxProgressiveRateToList))
         {
             throw new ArgumentException("Invalid Progressive Matrix Found");
         }
 
         try
         {
-            var filteredList = TaxProgressiveRate.Where(o => AnnualIncome > o.ToValue).ToList();
+            var filteredList = taxProgressiveRateToList.Where(o => AnnualIncome > o.ToValue).ToList();
             var sortedList = filteredList.OrderBy(o => o.FromValue).ToList();
 
-            decimal taxedIncome = 0 ;
-            decimal totalTaxedIncome = 0;
+            decimal? taxedIncome = 0 ;
+            decimal? totalTaxedIncome = 0;
 
             foreach (var matrix in sortedList)
             {
@@ -56,13 +65,18 @@ public class ProgressiveCalculation : ITaxCalculationByType
             throw;
         }
 
-        return taxValue;
+        if(taxValue is null)
+        {
+            return 0;
+        }
+
+        return (decimal)taxValue;
     }
 
     private bool ValidateTaxMatrix(IEnumerable<TaxProgressiveRates> TaxProgressiveMatrix)
     {
-        int currentFrom = 0;
-        int currentTo = 0;
+        decimal currentFrom = 0;
+        decimal? currentTo = 0;
 
         var sortedList = TaxProgressiveMatrix.OrderBy(o => o.FromValue).ToList();
         bool initialValue = true;

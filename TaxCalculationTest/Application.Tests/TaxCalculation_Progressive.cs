@@ -22,7 +22,7 @@ public class TaxCalculation_Progressive
             new TaxProgressiveRates{ Rate = 25, FromValue = 33951, ToValue = 82250},
             new TaxProgressiveRates{ Rate = 28, FromValue = 82251, ToValue = 171550},
             new TaxProgressiveRates{ Rate = 33, FromValue = 171551, ToValue = 372950},
-            new TaxProgressiveRates{ Rate = 35, FromValue = 372951, ToValue = int.MaxValue},
+            new TaxProgressiveRates{ Rate = 35, FromValue = 372951, ToValue = null},
         };
 
         progressiveMatrix_B = new List<TaxProgressiveRates>()
@@ -31,7 +31,7 @@ public class TaxCalculation_Progressive
             new TaxProgressiveRates{ Rate = 12, FromValue = 20001, ToValue = 80000},
             new TaxProgressiveRates{ Rate = 22, FromValue = 80001, ToValue = 175000},
             new TaxProgressiveRates{ Rate = 24, FromValue = 175001, ToValue = 330000},
-            new TaxProgressiveRates{ Rate = 32, FromValue = 330001, ToValue = int.MaxValue},
+            new TaxProgressiveRates{ Rate = 32, FromValue = 330001, ToValue = null},
         };
     }
 
@@ -76,7 +76,7 @@ public class TaxCalculation_Progressive
             new TaxProgressiveRates{ Rate = 12, FromValue = 20001, ToValue = 80000},
             new TaxProgressiveRates { Rate = 22, FromValue = 80001, ToValue = 175000 },
             new TaxProgressiveRates { Rate = 24, FromValue = 160001, ToValue = 330000 },
-            new TaxProgressiveRates { Rate = 32, FromValue = 330001, ToValue = int.MaxValue },
+            new TaxProgressiveRates { Rate = 32, FromValue = 330001, ToValue = null },
         };
 
         List<TaxProgressiveRates> progressiveMatrix_Invalid_UncoveredRange = new List<TaxProgressiveRates>()
@@ -85,7 +85,7 @@ public class TaxCalculation_Progressive
             new TaxProgressiveRates{ Rate = 12, FromValue = 20001, ToValue = 80000},
             new TaxProgressiveRates{ Rate = 22, FromValue = 90001, ToValue = 175000},
             new TaxProgressiveRates{ Rate = 24, FromValue = 175001, ToValue = 330000},
-            new TaxProgressiveRates{ Rate = 32, FromValue = 330001, ToValue = int.MaxValue},
+            new TaxProgressiveRates{ Rate = 32, FromValue = 330001, ToValue = null},
         };
 
         List<TaxProgressiveRates> progressiveMatrix_Invalid_StartWithZero = new List<TaxProgressiveRates>()
@@ -94,7 +94,7 @@ public class TaxCalculation_Progressive
             new TaxProgressiveRates{ Rate = 12, FromValue = 20001, ToValue = 80000},
             new TaxProgressiveRates{ Rate = 22, FromValue = 80001, ToValue = 175000},
             new TaxProgressiveRates{ Rate = 24, FromValue = 175001, ToValue = 330000},
-            new TaxProgressiveRates{ Rate = 32, FromValue = 330001, ToValue = int.MaxValue},
+            new TaxProgressiveRates{ Rate = 32, FromValue = 330001, ToValue = null},
         };
 
         return new[] { progressiveMatrix_Invalid_OverlappingRange, progressiveMatrix_Invalid_UncoveredRange, progressiveMatrix_Invalid_StartWithZero };
@@ -104,7 +104,8 @@ public class TaxCalculation_Progressive
     [TestCase(8349, ExpectedResult = 834.9)]
     [TestCase(33949, ExpectedResult = 4674.85)]
     [TestCase(82249, ExpectedResult = 16749.75)]
-    public decimal ProgressiveCalculation_ProgressiveMatrix(decimal annualIncome)
+    [TestCase(390951, ExpectedResult = 114516.35)]
+    public decimal? ProgressiveCalculation_ProgressiveMatrix(decimal annualIncome)
     {
         return _taxCalculation.Execute(annualIncome, Enumerable.Empty<TaxConfigValue>(), progressiveMatrix);
     }
@@ -112,7 +113,7 @@ public class TaxCalculation_Progressive
     [TestCase(0, ExpectedResult = 0)]
     [TestCase(35000, ExpectedResult = 3800)]
     [TestCase(225000, ExpectedResult = 42100)]
-    public decimal ProgressiveCalculation_ProgressiveMatrixSecondData(decimal annualIncome)
+    public decimal? ProgressiveCalculation_ProgressiveMatrixSecondData(decimal annualIncome)
     {
         return _taxCalculation.Execute(annualIncome, Enumerable.Empty<TaxConfigValue>(), progressiveMatrix_B);
     }
