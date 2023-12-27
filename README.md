@@ -9,9 +9,9 @@ The system contains 2 solution contains
 
 ## Installation
 
-Install the latest .NET 8 SDK
-Install SQL Server (Entity Framework is used for the ORM)
-Change the connection string in the appsettings.json file
+- Install the latest .NET 8 SDK
+- Install SQL Server (Entity Framework is used for the ORM)
+- Change the connection string in the appsettings.json file
 
 Unapplied migrations are applied on start up on project.
 
